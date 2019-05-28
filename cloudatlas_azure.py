@@ -9,7 +9,7 @@ from datetime import datetime
 from configparser import ConfigParser
 
 parser = ConfigParser()
-parser.read('/Users/bshorland/Desktop/cloudatlas.conf')
+parser.read('cloudatlas.conf')
 
 azure_subscription = parser.get('AZURE', 'azure_subscription')
 azure_client = parser.get('AZURE', 'azure_client')

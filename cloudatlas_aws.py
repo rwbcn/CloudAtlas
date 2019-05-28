@@ -7,7 +7,7 @@ from datetime import datetime
 from configparser import ConfigParser
 
 parser = ConfigParser()
-parser.read('/Users/bshorland/Desktop/cloudatlas.conf')
+parser.read('cloudatlas.conf')
 
 aws_region_name = parser.get('AWS', 'aws_region_name')
 aws_access_key_id = parser.get('AWS', 'aws_access_key_id')

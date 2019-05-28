@@ -10,7 +10,7 @@ from google.oauth2 import service_account
 from configparser import ConfigParser
 
 parser = ConfigParser()
-parser.read('/Users/bshorland/Desktop/cloudatlas.conf')
+parser.read('cloudatlas.conf')
 
 service_account_json = parser.get('GOOGLE', 'service_account_json')
 

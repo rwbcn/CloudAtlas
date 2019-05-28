@@ -33,7 +33,7 @@ import logging as log
 from configparser import ConfigParser
 
 parser = ConfigParser()
-parser.read('/Users/bshorland/Desktop/cloudatlas.conf')
+parser.read('cloudatlas.conf')
 
 bam_address = parser.get('BlueCat Address Manager', 'bam_address')
 bam_api_user = parser.get('BlueCat Address Manager', 'bam_api_user')
