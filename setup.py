@@ -6,6 +6,7 @@ import json
 import configparser
 import os
 import bamclient as bam 
+import cloudatlas_aws as aws
 
 class config:
     def __init__(self, section, parameter, value):
@@ -29,7 +30,7 @@ def setup():
     print("2) Configure Amazon Web Services")
     print("3) Configure Microsoft Azure")
     print("4) Configure Google Cloud Platform")
-   # print("5) Configure Hyper-V Manager") -> Will be added in a future release
+    print("5) Run BlueCat CloudAtlas")
     print("6) Show configuration")
     print("7) Install prerequisits")
     print("8) Install as cronjob")
@@ -40,21 +41,22 @@ def setup():
     print("" + bam.bcolours.ENDC)
     if len(option) == 1:
         cls()
-        switch(option)
+        switch_main(option)
     else:
         input(bam.bcolours.FAIL + "Wrong argument! Press ENTER and try again..." + bam.bcolours.ENDC)
         cls()
         setup()
 
 
-def switch(option):
+def switch_main(option):
     if option == "1":     
         print(bam.bcolours.GREEN + "Bluecat Adress Manager Configuration" + bam.bcolours.ENDC)
         print("")
         bam_ip = str(input("Please enter your BlueCat Address Manager IP address: "))
         bam_api_user = str(input("Please enter your API user account: "))
         bam_api_password = str(input("Please enter your API user password: "))
-        config_data = config('bam', ["bam_ip", "bam_api_user", "bam_api_password"], [bam_ip, bam_api_user, bam_api_password])
+        bam_config_name = str(input("Please enter your configuration name: "))
+        config_data = config('bam', ["bam_ip", "bam_api_user", "bam_api_password", "bam_config_name"], [bam_ip, bam_api_user, bam_api_password, bam_config_name])
         config_write("cloudatlas.conf", config_data)
     elif option == "2":
         print(bam.bcolours.GREEN + "Amazon Web Services Configuration" + bam.bcolours.ENDC)
@@ -78,9 +80,37 @@ def switch(option):
         print("")
         gcp_config_file = str(input("Please enter the path and filename to the GCP json file: "))
         config_data = config("gcp", ["gcp_config_file"], [gcp_config_file])
-        config_write("cloudatlas.conf", config_data)        
+        config_write("cloudatlas.conf", config_data)
+    elif option == "5":
+        print(bam.bcolours.GREEN + "Run BlueCat CloudAtlas" + bam.bcolours.ENDC)
+        print("1) Run Amazon Web Service Integration")
+        print("2) Run Microsoft Integration")
+        print("3) Run Google Cloud Platform Integration")
+        print("0) Return to main menu...")
+        option = str(input(bam.bcolours.GREEN + "Please enter option: "))
+        print("" + bam.bcolours.ENDC)
+        if len(option) == 1:
+            cls()
+            switch_run(option)
+        else:
+            input(bam.bcolours.FAIL + "Wrong argument! Press ENTER and try again..." + bam.bcolours.ENDC)
+            cls()
+            switch_main("5")
     elif option == "6":
         show_configuration()
+    
+def switch_run(option):
+    if option == "1":
+        bam_config = config_read("cloudatlas.conf", "bam")
+        aws_config = config_read("cloudatlas.conf", "aws")
+        aws.cloudatlas_aws(aws_config.value, bam_config.value)
+    elif option == "2":
+        print("Run Azure")
+    elif option == "3":
+        print("Run GCP")
+    elif option == "0":
+        cls()
+        setup()
 
 
 def config_write(configfile, config_data):

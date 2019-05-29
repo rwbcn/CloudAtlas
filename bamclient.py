@@ -42,10 +42,18 @@ class bcolours:
     UNDERLINE = '\033[4m'
 
 
-bam_address = "172.17.7.11"
-bam_api_user = "api"
-bam_api_pass = "api"
-bam_config_name = "RW300984"
+bam_address = ""
+bam_api_user = ""
+bam_api_pass = ""
+bam_config_name = ""
+
+def set_globalvar(bam_config):
+   global bam_address, bam_api_user, bam_api_pass, bam_config_name
+   bam_address = bam_config[0]  
+   bam_api_user = bam_config[1]   
+   bam_api_pass = bam_config[2]
+   bam_config_name = bam_config[3]
+
 
 def main():
 
