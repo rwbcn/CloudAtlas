@@ -1,5 +1,5 @@
-
 *.pyc
+launch.json
 .vscode/
 cloudatlas.conf
 serviceaccount.json
