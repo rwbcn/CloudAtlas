@@ -23,11 +23,13 @@ def setup():
     print("2) Configure Amazon Web Services")
     print("3) Configure Microsoft Azure")
     print("4) Configure Google Cloud Platform")
+   # print("5) Configure Hyper-V Manager") -> Will be added in a future release
+    print("6) Show configuration")
     print("7) Install prerequisits")
     print("8) Install as cronjob")
     print("9) Create Bluecat Gateway Workflow")
     print("0) Exit application")
-    print("6) Test function")
+    
     option = str(input("Please enter option: "))
     if len(option) == 1:
         switch(option)
@@ -51,7 +53,6 @@ def switch(option):
         aws_secretkey = str(input("Please enter your AWS secret key: "))
         config_data = config("aws", ["aws_region", "aws_id", "aws_secretkey"], [aws_region, aws_id, aws_secretkey])
         config_write("cloudatlas.conf", config_data)
-
     elif option == "3":
         azure_subscription = str(input("Please enter your Azure subscription: "))
         azure_client = str(input("Please enter your Azure client id: "))
@@ -64,7 +65,7 @@ def switch(option):
         config_data = config("gcp", ["gcp_config_file"], [gcp_config_file])
         config_write("cloudatlas.conf", config_data)
     elif option == "6":
-        test_read()
+        show_configuration()
 
 
 def config_write(configfile, config_data):
@@ -79,6 +80,9 @@ def config_write(configfile, config_data):
         parameter_count += 1
     with open(configfile, "w") as configuration:
         parser.write(configuration)
+    print("")
+    input("Settings saved. Press Enter to continue...")
+    setup()
 
 
 def config_read(configfile, section):
@@ -88,22 +92,27 @@ def config_read(configfile, section):
     if parser.has_section(section):
         parameters = parser.options(section)
     else:
-        print("Something went wrong, reading the configuration, back to main")
-        time.sleep(2)
-        print("")
-        setup()
+        return 
     for parameter in parameters:
         values.append(parser.get(section, parameter))
     config_data = config(section, parameters, values)
     return config_data
 
 
-def test_read():
-    config_data = config_read("cloudatlas.conf", "test")
-    for parameter in config_data.parameter:
-        print(parameter)
-    for value in config_data.value:
-        print(value)
+def show_configuration():
+    read_all = ["bam", "aws", "azure", "gcp"]
+    for section in read_all:
+        print("")
+        config_data = config_read("cloudatlas.conf", section)
+        if config_data is not None:
+            parameter_count = 0
+            print("[" + section + "]")
+            while parameter_count <= len(config_data.parameter) - 1:
+                print(config_data.parameter[parameter_count] + " = " + config_data.value[parameter_count])
+                parameter_count += 1
+            print("")
+    input("Press Enter to continue...")
+    setup()
 
 
 setup()
