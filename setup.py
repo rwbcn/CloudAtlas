@@ -8,6 +8,7 @@ import os
 import bamclient as bam 
 import cloudatlas_aws as aws
 
+
 class config:
     def __init__(self, section, parameter, value):
         self.section = section
@@ -17,7 +18,6 @@ class config:
 
 def cls():
     os.system('cls' if os.name == "nt" else "clear")
-
 
 def setup():
     cls()
