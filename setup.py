@@ -27,6 +27,7 @@ def setup():
     print("8) Install as cronjob")
     print("9) Create Bluecat Gateway Workflow")
     print("0) Exit application")
+    print("6) Test function")
     option = str(input("Please enter option: "))
     if len(option) == 1:
         switch(option)
@@ -62,6 +63,8 @@ def switch(option):
         gcp_config_file = str(input("Please enter the path and filename to the GCP json file: "))
         config_data = config("gcp", ["gcp_config_file"], [gcp_config_file])
         config_write("cloudatlas.conf", config_data)
+    elif option == "6":
+        test_read()
 
 
 def config_write(configfile, config_data):
@@ -78,8 +81,29 @@ def config_write(configfile, config_data):
         parser.write(configuration)
 
 
-def config_read(configfile, data):
-    print("something")
+def config_read(configfile, section):
+    parser = configparser.ConfigParser()
+    parser.read(configfile)
+    values = []
+    if parser.has_section(section):
+        parameters = parser.options(section)
+    else:
+        print("Something went wrong, reading the configuration, back to main")
+        time.sleep(2)
+        print("")
+        setup()
+    for parameter in parameters:
+        values.append(parser.get(section, parameter))
+    config_data = config(section, parameters, values)
+    return config_data
+
+
+def test_read():
+    config_data = config_read("cloudatlas.conf", "test")
+    for parameter in config_data.parameter:
+        print(parameter)
+    for value in config_data.value:
+        print(value)
 
 
 setup()
