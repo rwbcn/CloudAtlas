@@ -4,6 +4,8 @@
 import time
 import json
 import configparser
+import os
+import bamclient as bam 
 
 class config:
     def __init__(self, section, parameter, value):
@@ -12,12 +14,16 @@ class config:
         self.value = value
 
 
+def cls():
+    os.system('cls' if os.name == "nt" else "clear")
+
+
 def setup():
-    print("")
-    print("################################################")
-    print("Welcome to BlueCat CloudAtlas by Brian Shoreland")
-    print("################################################")
-    time.sleep(2)
+    cls()
+    print(bam.bcolours.GREEN + "######################################################" + bam.bcolours.ENDC)
+    print(bam.bcolours.GREEN + "## Welcome to BlueCat CloudAtlas by Brian Shoreland ##" + bam.bcolours.ENDC)
+    print(bam.bcolours.GREEN + "######################################################" + bam.bcolours.ENDC)
+    time.sleep(0.5)
     print("")
     print("1) Configure BlueCat Address Manager")
     print("2) Configure Amazon Web Services")
@@ -27,33 +33,40 @@ def setup():
     print("6) Show configuration")
     print("7) Install prerequisits")
     print("8) Install as cronjob")
-    print("9) Create Bluecat Gateway Workflow")
+    print("9) Install Bluecat Gateway Workflow")
     print("0) Exit application")
     
-    option = str(input("Please enter option: "))
+    option = str(input(bam.bcolours.GREEN + "Please enter option: "))
+    print("" + bam.bcolours.ENDC)
     if len(option) == 1:
+        cls()
         switch(option)
     else:
-        print("Wrong argument! Try again")
-        print("")
-        time.sleep(2)
+        input(bam.bcolours.FAIL + "Wrong argument! Press ENTER and try again..." + bam.bcolours.ENDC)
+        cls()
         setup()
 
 
 def switch(option):
-    if option == "1":
+    if option == "1":     
+        print(bam.bcolours.GREEN + "Bluecat Adress Manager Configuration" + bam.bcolours.ENDC)
+        print("")
         bam_ip = str(input("Please enter your BlueCat Address Manager IP address: "))
         bam_api_user = str(input("Please enter your API user account: "))
         bam_api_password = str(input("Please enter your API user password: "))
         config_data = config('bam', ["bam_ip", "bam_api_user", "bam_api_password"], [bam_ip, bam_api_user, bam_api_password])
         config_write("cloudatlas.conf", config_data)
     elif option == "2":
+        print(bam.bcolours.GREEN + "Amazon Web Services Configuration" + bam.bcolours.ENDC)
+        print("")
         aws_region = str(input("Please enter your AWS region: "))
         aws_id = str(input("Please enter your AWS access key: "))
         aws_secretkey = str(input("Please enter your AWS secret key: "))
         config_data = config("aws", ["aws_region", "aws_id", "aws_secretkey"], [aws_region, aws_id, aws_secretkey])
         config_write("cloudatlas.conf", config_data)
     elif option == "3":
+        print(bam.bcolours.GREEN + "Microsoft Azure Configuration" + bam.bcolours.ENDC)
+        print("")
         azure_subscription = str(input("Please enter your Azure subscription: "))
         azure_client = str(input("Please enter your Azure client id: "))
         azure_client_secret = str(input("Please enter your Azure client secret: "))
@@ -61,9 +74,11 @@ def switch(option):
         config_data = config("azure", ["azure_subscription", "azure_client", "azure_client_secret", "azure_tenant_id"], [azure_subscription, azure_client, azure_client_secret, azure_tenant_id])
         config_write("cloudatlas.conf", config_data)
     elif option == "4":
+        print(bam.bcolours.GREEN + "Google Cloud Platform Configuration" + bam.bcolours.ENDC)
+        print("")
         gcp_config_file = str(input("Please enter the path and filename to the GCP json file: "))
         config_data = config("gcp", ["gcp_config_file"], [gcp_config_file])
-        config_write("cloudatlas.conf", config_data)
+        config_write("cloudatlas.conf", config_data)        
     elif option == "6":
         show_configuration()
 
@@ -81,7 +96,8 @@ def config_write(configfile, config_data):
     with open(configfile, "w") as configuration:
         parser.write(configuration)
     print("")
-    input("Settings saved. Press Enter to continue...")
+    input(bam.bcolours.GREEN + "Settings saved. Press Enter to continue...")
+    cls()
     setup()
 
 
@@ -111,7 +127,8 @@ def show_configuration():
                 print(config_data.parameter[parameter_count] + " = " + config_data.value[parameter_count])
                 parameter_count += 1
             print("")
-    input("Press Enter to continue...")
+    input(bam.bcolours.GREEN + "Press Enter to continue...")
+    cls()
     setup()
 
 
