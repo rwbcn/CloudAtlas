@@ -10,6 +10,20 @@ Discover compute infrastructure from Amazon Web Service, Microsoft Azure and Goo
 # Installation
 
 - Download
-- Configure cloudatlas.conf with parameters
-- Run scripts
+- Start python setup.py
+- Select options
+
+![alt text](setup_menu.png "Setup menu")
+
+# Features
+
+- All features of the origin source (Indigo360 codebase) -> Not finished yet
+- User interface:
+  - Configuration (Bluecat Address Manager, AWS, Azure and GCP)
+  - Run BlueCat CloudAtlas
+  - Show Configuration
+  - Install prerequisits
+  - Install CloudAtlas as Cronjob
+  - Install CloudAtlas as BlueCat Gateway Workflow
+
 
