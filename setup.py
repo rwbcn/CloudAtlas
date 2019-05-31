@@ -29,7 +29,7 @@ def cls():
 def setup():
     cls()
     print(bam.bcolours.GREEN + "######################################################" + bam.bcolours.ENDC)
-    print(bam.bcolours.GREEN + "## Welcome to BlueCat CloudAtlas by Brian Shoreland ##" + bam.bcolours.ENDC)
+    print(bam.bcolours.GREEN + "## Welcome to BlueCat CloudAtlas by Brian Shorland ##" + bam.bcolours.ENDC)
     print(bam.bcolours.GREEN + "######################################################" + bam.bcolours.ENDC)
     time.sleep(0.5)
     print("")
