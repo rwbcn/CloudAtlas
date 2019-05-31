@@ -13,7 +13,7 @@ import time
 import json
 import configparser
 import os
-import bamclient as bam 
+import bamclient as bam
 
 
 class config:

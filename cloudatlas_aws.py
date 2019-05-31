@@ -19,27 +19,25 @@ def cloudatlas_aws(aws_config, bam_config):
         # Get BAM version
 
         x = BAM.GetBAMInfo(soap_client)
-        version = BAM.getPropsField(x, "version")
-        print(version)
-
+        version = BAM.getPropsField(x, "version").split(".", 2)
+        bam_version = version[0] + "." + version[1]
+        
+        
         # Check if UDFs in BAM exists
 
-        CheckUDFs = BAM.GetUDFs(soap_client, "Device")
-        CheckUDFs_count = 0
-        for udf in CheckUDFs:
-            if (udf[1] == "InstanceType"
-                or udf[1] == "InstanceState"
-                or udf[1] == "PublicDNSName"
-                or udf[1] == "PrivateDNSName"
-                or udf[1] == "IPv4PublicIP"
-                or udf[1] == "AvailabilityZone"):
-                CheckUDFs_count = CheckUDFs_count + 1
-
-    # If one of UDFs not exists, exit
-
-        if CheckUDFs_count < 6:
-            print("Exit. Please check your UDFs configured on BAM")
-            exit()
+        AWS_Custom_DeviceUDFs = ["AvailabilityZone", "InstanceState", "InstanceType", "IPv4PublicIP", "PrivateDNSName", "PublicDNSName", "CloudAtlasSyncTime", "KeyName", "Monitoring", "Owner", "VirtualizationType"]
+        AWS_Custom_DeviceUDFs_count = 0
+        for aws_udf in AWS_Custom_DeviceUDFs:
+            if not (BAM.GetDeviceUDF(soap_client, aws_udf)):
+                if bam_version == "9.1":
+                    BAM.AddUDF(soap_client,aws_udf,aws_udf)
+                else:
+                    AWS_Custom_DeviceUDFs_count += 1
+        
+        if AWS_Custom_DeviceUDFs_count > 0:
+            print(BAM.bcolours.FAIL + "Exit. Please check your UDFs configured on BAM" + BAM.bcolours.ENDC)
+            input("Press Enter to get back to main menu...")
+            os.system("python3 setup.py")
 
         props = ""
 
@@ -116,13 +114,13 @@ def cloudatlas_aws(aws_config, bam_config):
             if dev:
                 print(BAM.bcolours.GREEN + BAM.bcolours.BOLD + '[AWS CloudAtlas] EC2 Instance Device in BlueCat Address Manager, updating  ' + BAM.bcolours.ENDC)
                 BAM.DelDevice(soap_client, conf.id, dev.id)
-                props = "PrivateDNSName="+instance.private_dns_name + '|' + "PublicDNSName=" + instance.public_dns_name + '|' + "InstanceState=" + instance.state['Name'] + '|' + "InstanceType="+instance.instance_type + "|" + "AvailabilityZone=" + instance.placement['AvailabilityZone'] + "|" + "IPv4PublicIP=" + str(instance.public_ip_address)
+                props = "PrivateDNSName=" + instance.private_dns_name + '|' + "PublicDNSName=" + instance.public_dns_name + '|' + "InstanceState=" + instance.state['Name'] + '|' + "InstanceType="+instance.instance_type + "|" + "AvailabilityZone=" + instance.placement['AvailabilityZone'] + "|" + "IPv4PublicIP=" + str(instance.public_ip_address)
                 device = soap_client.service.addDevice(str(conf['id']), instance.id, AWSDevType, AWSInsanceSubType, instance.private_ip_address, "", props)
             #	device = BAM.AssignIP4Address(soap_client,str(conf['id']),instance.private_ip_address, mac_addr)
 
             else:
                 print(BAM.bcolours.GREEN + BAM.bcolours.BOLD + '[AWS CloudAtlas] EC2 Instance Device not found, adding to BlueCat Address Manager ' + BAM.bcolours.ENDC)
-                props = "PrivateDNSName="+instance.private_dns_name + '|' + "PublicDNSName=" + instance.public_dns_name + '|' + "InstanceState=" + instance.state['Name'] + '|' + "InstanceType="+instance.instance_type + "|" + "AvailabilityZone=" + instance.placement['AvailabilityZone'] + "|" + "IPv4PublicIP=" + str(instance.public_ip_address)
+                props = "PrivateDNSName=" + instance.private_dns_name + '|' + "PublicDNSName=" + instance.public_dns_name + '|' + "InstanceState=" + instance.state['Name'] + '|' + "InstanceType="+instance.instance_type + "|" + "AvailabilityZone=" + instance.placement['AvailabilityZone'] + "|" + "IPv4PublicIP=" + str(instance.public_ip_address)
                 device = soap_client.service.addDevice(str(conf['id']), instance.id, AWSDevType, AWSInsanceSubType, instance.private_ip_address, "", props)
             #	device = BAM.AssignIP4Address(soap_client,str(conf['id']),instance.private_ip_address, mac_addr)
 
