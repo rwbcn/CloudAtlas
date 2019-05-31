@@ -1,6 +1,14 @@
 #!/usr/bin/env python3
 # Author: Ronny Wolf - BlueCat Networks
 
+import sys
+
+try:
+    assert sys.version_info >= (3, 0)
+except:
+    print("\033[91mError: Wrong version (" + str(sys.version_info.major) + "." + str(sys.version_info.minor) + "), please use Python 3.x! \033[0m")
+    exit()
+
 import time
 import json
 import configparser
@@ -28,9 +36,9 @@ def cls():
 
 def setup():
     cls()
-    print(bam.bcolours.GREEN + "######################################################" + bam.bcolours.ENDC)
+    print(bam.bcolours.GREEN + "#####################################################" + bam.bcolours.ENDC)
     print(bam.bcolours.GREEN + "## Welcome to BlueCat CloudAtlas by Brian Shorland ##" + bam.bcolours.ENDC)
-    print(bam.bcolours.GREEN + "######################################################" + bam.bcolours.ENDC)
+    print(bam.bcolours.GREEN + "#####################################################" + bam.bcolours.ENDC)
     time.sleep(0.5)
     print("")
     print("1) Configure BlueCat Address Manager")
@@ -106,7 +114,7 @@ def switch_main(option):
     elif option == "6":
         show_configuration()
     elif option == "7":
-        packages = ["google", "boto3", "configparser", "azure", "datetime", "google-api-python-client", "oauthlib", "google.oauth2"]
+        packages = ["google", "boto3", "configparser", "azure", "datetime", "google-api-python-client", "oauthlib", "netaddr", "pprint"]
         for pkg in packages:
             install_modules(pkg)
         print("")
@@ -127,6 +135,11 @@ def switch_run(option):
     elif option == "0":
         cls()
         setup()
+
+
+def config_cronjob():
+    import python_crontab
+
 
 
 def config_write(configfile, config_data):

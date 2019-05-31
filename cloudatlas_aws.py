@@ -20,6 +20,7 @@ def cloudatlas_aws(aws_config, bam_config):
 
         x = BAM.GetBAMInfo(soap_client)
         version = BAM.getPropsField(x, "version")
+        print(version)
 
         # Check if UDFs in BAM exists
 
