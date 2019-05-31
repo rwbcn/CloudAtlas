@@ -6,7 +6,6 @@ import json
 import configparser
 import os
 import bamclient as bam 
-import cloudatlas_aws as aws
 
 
 class config:
@@ -15,6 +14,14 @@ class config:
         self.parameter = parameter
         self.value = value
 
+
+def install_modules(package):
+    import subprocess
+    import sys
+    print(bam.bcolours.GREEN + "########### Package: " + package + " ########### " + bam.bcolours.ENDC)
+    subprocess.call([sys.executable, "-m", "pip", "install", package])
+    print(bam.bcolours.GREEN + "########### Package: " + package + " finished ########### " + bam.bcolours.ENDC)
+    time.sleep(0.5)
 
 def cls():
     os.system('cls' if os.name == "nt" else "clear")
@@ -98,9 +105,18 @@ def switch_main(option):
             switch_main("5")
     elif option == "6":
         show_configuration()
-    
+    elif option == "7":
+        packages = ["google", "boto3", "configparser", "azure", "datetime", "google-api-python-client", "oauthlib", "google.oauth2"]
+        for pkg in packages:
+            install_modules(pkg)
+        print("")
+        input(bam.bcolours.GREEN + "Prerequistis installed. Press Enter to get back to main..." + bam.bcolours.ENDC)
+        setup()
+
+
 def switch_run(option):
     if option == "1":
+        import cloudatlas_aws as aws
         bam_config = config_read("cloudatlas.conf", "bam")
         aws_config = config_read("cloudatlas.conf", "aws")
         aws.cloudatlas_aws(aws_config.value, bam_config.value)
