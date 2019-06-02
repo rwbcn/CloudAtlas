@@ -142,6 +142,11 @@ def GetNetworkV6(soap_client,configID,IP6):
 	network6 = soap_client.service.getIPRangedByIP(configID, "IP6Network",IP6)
 	return network6
 
+def GetAddressV4(soap_client,configID, ipv4address):
+   addressv4 = soap_client.service.getIP4Address(configID, "IP6Network", ipv4address)
+   print("Hello" + addressv4)
+
+
 def GetNetworksV6(soap_client,network,start,count):
 	ipv6Networks = soap_client.service.searchByObjectTypes(network,"IP6Network",start,count)
 	return ipv6Networks[0]
@@ -248,6 +253,9 @@ def AssignIP4Address(soap_client, parentID, ipv4, macaddr):
    AssignIP4Address = soap_client.service.assignIP4Address(parentID,ipv4,macaddr,'','MAKE_STATIC','')
    return AssignIP4Address
 
+def UpdateIP4Address(soap_client, parentID, ipv4, macaddr):
+   UpdateIP4Address = soap_client.service.getIP4Address
+
 #UDF functions
 
 def GetDeviceUDF(soap_client,name):
@@ -257,7 +265,7 @@ def GetDeviceUDF(soap_client,name):
 				if (d.name == name):
 					return d.name
 	return
-   
+
 
 def GetUDFs(soap_client,object_type):
 	UDFs = soap_client.service.getUserDefinedFields(object_type,False)

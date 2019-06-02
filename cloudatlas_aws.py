@@ -11,9 +11,7 @@ def cloudatlas_aws(aws_config, bam_config):
         region_name = aws_config[0]
         aws_access_key_id = aws_config[1]
         aws_secret_access_key = aws_config[2]
-        
         BAM.set_globalvar(bam_config)
-
         soap_client = BAM.bam_login()
 
         # Get BAM version
@@ -21,7 +19,6 @@ def cloudatlas_aws(aws_config, bam_config):
         x = BAM.GetBAMInfo(soap_client)
         version = BAM.getPropsField(x, "version").split(".", 2)
         bam_version = version[0] + "." + version[1]
-        
         
         # Check if UDFs in BAM exists
 
@@ -111,23 +108,25 @@ def cloudatlas_aws(aws_config, bam_config):
 
             # Check if Instance Device is already added, if not add the required device
             dev = BAM.GetDevice(soap_client, conf.id, instance.id)
+            
             if dev:
                 print(BAM.bcolours.GREEN + BAM.bcolours.BOLD + '[AWS CloudAtlas] EC2 Instance Device in BlueCat Address Manager, updating  ' + BAM.bcolours.ENDC)
                 BAM.DelDevice(soap_client, conf.id, dev.id)
                 props = "PrivateDNSName=" + instance.private_dns_name + '|' + "PublicDNSName=" + instance.public_dns_name + '|' + "InstanceState=" + instance.state['Name'] + '|' + "InstanceType="+instance.instance_type + "|" + "AvailabilityZone=" + instance.placement['AvailabilityZone'] + "|" + "IPv4PublicIP=" + str(instance.public_ip_address)
                 device = soap_client.service.addDevice(str(conf['id']), instance.id, AWSDevType, AWSInsanceSubType, instance.private_ip_address, "", props)
             #	device = BAM.AssignIP4Address(soap_client,str(conf['id']),instance.private_ip_address, mac_addr)
-
+            #    BAM.GetAddressV4(soap_client, str(conf['id'], instance.private_ip_address))
             else:
                 print(BAM.bcolours.GREEN + BAM.bcolours.BOLD + '[AWS CloudAtlas] EC2 Instance Device not found, adding to BlueCat Address Manager ' + BAM.bcolours.ENDC)
                 props = "PrivateDNSName=" + instance.private_dns_name + '|' + "PublicDNSName=" + instance.public_dns_name + '|' + "InstanceState=" + instance.state['Name'] + '|' + "InstanceType="+instance.instance_type + "|" + "AvailabilityZone=" + instance.placement['AvailabilityZone'] + "|" + "IPv4PublicIP=" + str(instance.public_ip_address)
                 device = soap_client.service.addDevice(str(conf['id']), instance.id, AWSDevType, AWSInsanceSubType, instance.private_ip_address, "", props)
             #	device = BAM.AssignIP4Address(soap_client,str(conf['id']),instance.private_ip_address, mac_addr)
-
+            #    BAM.GetAddressV4(soap_client, str(conf['id'], instance.private_ip_address))
             print("")
             print("Synchronization finished, check your BAM configuration.")
-    except:
+    except Exception as e:
         print("")
+        print(str(e))
         print(BAM.bcolours.FAIL + "An error occured." + BAM.bcolours.ENDC)
     finally:
         input("Press Enter to get back to main menu...")

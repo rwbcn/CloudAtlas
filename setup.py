@@ -120,13 +120,15 @@ def switch_main(option):
         print("")
         input(bam.bcolours.GREEN + "Prerequistis installed. Press Enter to get back to main..." + bam.bcolours.ENDC)
         setup()
+    elif option == "0":
+        exit()
 
 
 def switch_run(option):
-    if option == "1":
-        import cloudatlas_aws as aws
+    if option == "1": 
         bam_config = config_read("cloudatlas.conf", "bam")
         aws_config = config_read("cloudatlas.conf", "aws")
+        import cloudatlas_aws as aws
         aws.cloudatlas_aws(aws_config.value, bam_config.value)
     elif option == "2":
         print("Run Azure")
@@ -166,13 +168,23 @@ def config_read(configfile, section):
     values = []
     if parser.has_section(section):
         parameters = parser.options(section)
+        config_data = None
+        for parameter in parameters:
+            values.append(parser.get(section, parameter))
+            config_data = config(section, parameters, values)
+        return config_data
     else:
-        return 
-    for parameter in parameters:
-        values.append(parser.get(section, parameter))
-    config_data = config(section, parameters, values)
-    return config_data
-
+        print(bam.bcolours.FAIL + "Config not existing. Please configure " + section + " configuration..." + bam.bcolours.ENDC)
+        print("")
+        if section == "bam":
+            switch_main("1")
+        elif section == "aws":
+            switch_main("2")
+        elif section == "azure":
+            switch_main("3")
+        elif section == "gcp":
+            switch_main("4")
+    
 
 def show_configuration():
     read_all = ["bam", "aws", "azure", "gcp"]
